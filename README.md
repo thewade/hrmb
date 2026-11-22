@@ -1,3 +1,8 @@
+> [!IMPORTANT]
+> **This repository is no longer actively maintained.**
+>
+> Development continues in community [forks](https://github.com/thewade/hrmb/forks), including [AARoads Wiki/hrmb](https://github.com/aaroads-wiki/hrmb).
+
 Highway Route Marker Bot
 ========================
 This is a bot run for Wikimedia Commons to create sequences of images and then convert the text to paths.
