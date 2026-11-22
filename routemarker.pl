@@ -8,13 +8,13 @@ use Term::ReadKey;
 # ===================
 
 my $replaceme = '%num%'; # replacement string, default %num%
-my $scourpath = './scour/scour.py'; # where Scour CLS is located
+my $scourpath = '/usr/bin/scour'; # where Scour CLS is located
 my $textID = 'routenum'; # object ID of the text to be converted
 my $delay = 10; # delay between uploading images
 my $autoupload = 0; # prompts for input between uploads (0=false, 1=true)
-my $username = "Highway Route Marker Bot"; # uploaders Mediawiki username
-my $apiurl = 'http://commons.wikimedia.org/w/api.php'; # Mediawiki API location
-my $uploadurl = 'http://commons.wikimedia.org/w/index.php?title=Special:Upload&uploadformstyle=basic'; # Mediawiki upload location
+my $username = "HWY Shield Bot"; # uploaders Mediawiki username
+my $apiurl = 'https://commons.wikimedia.org/w/api.php'; # Mediawiki API location
+my $uploadurl = 'https://commons.wikimedia.org/w/index.php?title=Special:Upload&uploadformstyle=basic'; # Mediawiki upload location
 
 # Variables
 # ===================
@@ -105,21 +105,21 @@ foreach (@sequence) {
 	# Text to Path & Optimize
 	# =========================
 	
-	# You cannot use Inkscape verbs in the shell mode or without the GUI, so for now Inkscape will open and close as it does it's work
+	# Inkscape 1.2+ removed --verb; use --actions with --batch-process instead (headless, no GUI needed)
 	print "Converting text-to-path...";
-        system("inkscape", "$outfilename", "--select=$textID", "--verb=ObjectToPath", "--verb=FileSave", "--verb=FileClose");
+        system("inkscape", "--actions=select-by-id:$textID;object-to-path;export-filename:$outfilename;export-overwrite;export-do", "--batch-process", $outfilename);
 
         # Clean SVG with Scour
 	if ($scourpath) {
 		print "creating optimized SVG with Scour...\n\n";
-        	system("python", $scourpath, "-i", $outfilename, "-o", "temp_" . $outfilename);
+        	system($scourpath, "-i", $outfilename, "-o", "temp_" . $outfilename);
 		unlink ($outfilename);
 		rename ("temp_$outfilename", $outfilename);
 	}
 
 	# Fixing SVG in Inkscape
 	print "\nResave file with Inkscape...";
-        system("inkscape", $outfilename ,"--export-plain-svg=" . $outfilename);
+        system("inkscape", "--actions=export-plain-svg;export-filename:$outfilename;export-overwrite;export-do", "--batch-process", $outfilename);
 
     }    
 
