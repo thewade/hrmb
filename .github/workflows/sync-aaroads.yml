@@ -1,0 +1,30 @@
+
+name: Sync AARoads fork
+
+on:
+  schedule:
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Fetch and preserve AARoads commits
+        run: |
+          git remote add aaroads \
+            https://github.com/aaroads-wiki/hrmb.git
+
+          git fetch --no-tags aaroads master
+
+          git push origin \
+            FETCH_HEAD:refs/heads/aaroads
